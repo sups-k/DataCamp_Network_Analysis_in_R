@@ -1,0 +1,126 @@
+---
+title: "1.03_Intro.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Install cran packages
+list.of.packages <- c("igraph")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(igraph)
+```
+
+
+# What are soical networks?
+
+Network graph
+adjacency matrix
+edgelist
+
+igraph r package
+
+library(igraph)
+g <- graph.edgelist(as.matrix(df), directed = FALSE)
+
+V(g) gives the vertices for the igraph object and lists them as well
+
+E(g) gives the number of edges for the igraph object and lists them as well 
+
+gorder(g) simply get the number of vertices
+gsize(g) get the number of edges
+
+plot(g) to get visualization of the network
+
+
+```{r}
+friends<- read.csv("../Input/friends.csv")
+head(friends)
+
+# Convert friends dataframe to a matrix
+friends.mat <- as.matrix(friends)
+
+# Convert friends matrix to an igraph object
+g <- graph.edgelist(friends.mat, directed = FALSE)
+
+# Subset vertices and edges
+V(g)
+E(g)
+
+# Count number of edges
+gsize(g)
+
+# Count number of vertices
+gorder(g)
+```
+
+# Network attributes:
+
+Network attribuutes can be categorical or numerical
+
+Vertex and edge attributes
+
+Edges - weights 
+The weight may refer to the number of contacts between 2 people
+
+## To add attrubutes to an igraph object:
+
+Adding Vertex Attributes
+
+g <- set_vertex_attr(
+  g, 
+  "age", 
+  value = c(
+    20,25,21,23,24,23,22
+    )
+  )
+
+vertex_attr(g)
+$name
+[1] "A" "B" "C" "D" "E" "F" "G"
+
+$age
+[1] 20 25 21 23 24 23 22
+Adding Edge Attributes
+
+g <- set_edge_attr(
+  g, 
+  "frequency", 
+  value = c(
+    2,1,1,1,3,2,4
+    )
+  )
+
+edge_attr(g)
+$frequency
+[1] 2 1 1 1 3 2 4
+
+Alternatively, you may already have the attributes in your input dataframe
+
+
+grapdh_from_data_frame(d=edges.df, vertices=vertices.df, directed=FALSE)
+
+subsetting networks:
+
+E(g)[[inc('E'))]]
+
+E(g)[[frequency>=3]]
+
+You can also change the visual attributes of networks:
+Network visualization
+V(g)$color <- ifelse(
+  V(g)$age > 22, "red", "white"
+)
+
+plot(
+  g, 
+  vertex.label.color = "black"
+)
+
+
+```{r}
+friends_v <- read.csv("../Input/friends1_nodes.csv")
+friends_e <- read.csv("../Input/friends1_edges.csv")
+
+```
