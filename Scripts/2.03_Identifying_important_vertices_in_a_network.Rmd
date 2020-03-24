@@ -1,0 +1,117 @@
+---
+title: "2.03_Identifying_important_vertices_in_a_network.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Install cran packages
+list.of.packages <- c("igraph")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(igraph)
+```
+
+
+# Directed Networks
+
+The simplest measure of a vertexes importance is degree
+
+In directed, you have in.degree and out.degree
+
+Test if an edge exists between 2 vertices:
+```{r}
+# Is there an edge between Britt and Rene?
+g['Britt','Rene']
+
+# Show all edges to or from Britt
+incident(g, 'Britt', mode=c("all"))
+
+# Find the starting vertex of all edges:
+head_of(g,E(g))
+```
+
+
+### Read in the measles graph info 
+```{r}
+measles <- read.csv("../Input/measles.csv")
+g_measles <- graph_from_data_frame(measles, directed = TRUE)
+
+# is the graph directed?
+is.directed(g_measles)
+
+# Is the graph weighted?
+is.weighted(g_measles)
+
+# Where does each edge originate from?
+table(head_of(g_measles, E(g_measles)))
+```
+
+
+### Explore the measles network
+```{r}
+# Make a basic plot
+plot(g_measles, 
+     vertex.label.color = "black", 
+     edge.color = 'gray77',
+     vertex.size = 0,
+     edge.arrow.size = 0.1,
+     layout = layout_nicely(g_measles))
+
+# Is there an edge going from vertex 184 to vertex 178?
+g_measles['184', '178']
+
+# Is there an edge going from vertex 178 to vertex 184?
+g_measles['178', '184']
+```
+
+
+### Identifying neighbors:
+```{r}
+neighbors(g_measles,"184",mode=c("all"))
+
+# Finding intersections (i.e. if 2 vertices don't share a direct neighbor)
+
+x<- neighbors(g_measles, "45",mode=c("all"))
+
+y<- neighbors(g_measles, "183",mode=c("all"))
+
+intersection(x,y)
+```
+
+
+### Paths:
+
+Geodesic distance: how far two nodes are from one another
+
+Diameter - the longest possible path in a network
+```{r}
+farthest_vertices(g_measles)
+
+get_diameter(g_measles)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

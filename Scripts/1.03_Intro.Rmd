@@ -33,7 +33,6 @@ gsize(g) get the number of edges
 
 plot(g) to get visualization of the network
 
-
 ```{r}
 friends<- read.csv("../Input/friends.csv")
 head(friends)
@@ -53,20 +52,23 @@ gsize(g)
 
 # Count number of vertices
 gorder(g)
+
+# Plot
+plot(g)
 ```
 
-# Network attributes:
+## Network attributes:
 
-Network attribuutes can be categorical or numerical
+Network attributes can be categorical or numerical
 
 Vertex and edge attributes
 
 Edges - weights 
 The weight may refer to the number of contacts between 2 people
 
-## To add attrubutes to an igraph object:
-
-Adding Vertex Attributes
+## To add attributes to an igraph object:
+```{r}
+# Adding Vertex Attributes
 
 g <- set_vertex_attr(
   g, 
@@ -77,12 +79,8 @@ g <- set_vertex_attr(
   )
 
 vertex_attr(g)
-$name
-[1] "A" "B" "C" "D" "E" "F" "G"
 
-$age
-[1] 20 25 21 23 24 23 22
-Adding Edge Attributes
+# Adding Edge Attributes
 
 g <- set_edge_attr(
   g, 
@@ -93,48 +91,43 @@ g <- set_edge_attr(
   )
 
 edge_attr(g)
-$frequency
-[1] 2 1 1 1 3 2 4
+```
 
-Alternatively, you may already have the attributes in your input dataframe
+## Alternatively, you may already have the attributes in your input dataframe
+
+```{r}
+edges.df <- read.csv("../Input/friends1_edges.csv")
+vertices.df <- read.csv("../Input/friends1_nodes.csv")
+
+graph_from_data_frame(d=edges.df, vertices=vertices.df, directed=FALSE)
+```
 
 
-grapdh_from_data_frame(d=edges.df, vertices=vertices.df, directed=FALSE)
+## subsetting networks:
 
-subsetting networks:
-
-E(g)[[inc('E'))]]
+```{r}
+E(g)[[inc('Britt')]]
 
 E(g)[[frequency>=3]]
+```
 
-You can also change the visual attributes of networks:
-Network visualization
+
+## You can also change the visual attributes of networks:
+
+```{r}
+# Network visualization
 V(g)$color <- ifelse(
   V(g)$age > 22, "red", "white"
 )
 
-plot(
-  g, 
-  vertex.label.color = "black"
-)
-
-```{r}
-friends_v <- read.csv("../Input/friends1_nodes.csv")
-friends_e <- read.csv("../Input/friends1_edges.csv")
-
-hours <- friends_e$hours
-
-g1 <- graph_from_data_frame(d = friends_e, vertices = friends_v, directed = FALSE)
+w1 <- E(g)$hours
 
 
-# Subset edges greater than or equal to 5 hours
-E(g1)[[hours>=5]]  
-
-# Set vertex color by gender
-V(g1)$color <- ifelse(V(g1)$gender == "F", "orange", "dodgerblue")
-
-# Plot the graph
-plot(g1, vertex.label.color = "black")
+# Plot the network varying edges by weights
+m1 <- layout_nicely(g)
+plot(g, 
+        vertex.label.color = "black", 
+        edge.color = 'black',
+        edge.width = w1,
+        layout = m1)
 ```
-
-
