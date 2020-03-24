@@ -89,11 +89,98 @@ Diameter - the longest possible path in a network
 farthest_vertices(g_measles)
 
 get_diameter(g_measles)
+
+# Identifying vertices reachable in N steps
+ego(g_measles, 2, "184", mode=c("out"))
+
+# Identify vertices that can reach vertex 184 within two connections
+ego(g_measles, 2, '184', mode = c('in'))
 ```
 
 
 
+### Important and influential vertices
 
+Measures of vertex importance
+degree
+betweenness
+eigenvector centrality
+closeness centrality
+pagerank centrality
+
+## Calculating degree
+```{r}
+degree(g_measles, mode=c("all"))
+
+# Calculate the out-degree of each vertex
+g.outd <- degree(g_measles, mode = c("out"))
+
+# View a summary of out-degree
+table(g.outd)
+
+# Make a histogram of out-degrees
+hist(g.outd, breaks = 30)
+
+# Find the vertex that has the maximum out-degree
+which.max(g.outd)
+```
+
+### Betweenness:
+This measures how frequently a given vertex serves as the shortest path between any pair of vertices in a network
+```{r}
+betweenness(g_measles, directed="TRUE")
+
+# Normalize by
+betweenness(g_measles, directed=TRUE,normalized=TRUE)
+
+# Calculate betweenness of each vertex
+g.b <- betweenness(g_measles, directed = TRUE)
+
+# Show histogram of vertex betweenness
+hist(g.b, breaks = 80)
+
+# Create plot with vertex size determined by betweenness score
+plot(g, 
+     vertex.label = NA,
+     edge.color = 'black',
+     vertex.size = sqrt(g.b)+1,
+     edge.arrow.size = 0.05,
+     layout = layout_nicely(g_measles))
+```
+
+### Visualizing important nodes and edges
+Use make_ego_graph() to create a subset of our network comprised of vertices that are connected to vertex 184. The first argument is the original graph g. The second argument is the maximal number of connections that any vertex needs to be connected to our vertex of interest. In this case we can use diameter() to return the length of the longest path in the network. The third argument is our vertex of interest which should be 184. The final argument is the mode. In this instance you can include all connections regardless of direction.
+```{r}
+# Make an ego graph
+g184 <- make_ego_graph(g_measles, diameter(g_measles), nodes = '184', mode = c("all"))[[1]]
+
+# Get a vector of geodesic distances of all vertices from vertex 184 
+dists <- distances(g184, "184")
+
+# Create a color palette of length equal to the maximal geodesic distance plus one.
+colors <- c("black", "red", "orange", "blue", "dodgerblue", "cyan")
+
+# Set color attribute to vertices of network g184.
+V(g184)$color <- colors[dists+1]
+
+# Visualize the network based on geodesic distance from vertex 184 (patient zero).
+plot(g184, 
+     vertex.label = dists, 
+     vertex.label.color = "white",
+     vertex.label.cex = .6,
+     edge.color = 'black',
+     vertex.size = 7,
+     edge.arrow.size = .05,
+     main = "Geodesic Distances from Patient Zero"
+     )
+```
+
+###
+
+```{r}
+
+
+```
 
 
 

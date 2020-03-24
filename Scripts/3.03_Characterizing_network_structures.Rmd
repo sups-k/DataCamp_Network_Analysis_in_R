@@ -1,0 +1,84 @@
+---
+title: "2.03_Identifying_important_vertices_in_a_network.Rmd"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Install cran packages
+list.of.packages <- c("igraph")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(igraph)
+```
+
+### Characterizing network structures:
+eigenvector centrality: a measure of how well a vertex is connected to other vertices
+```{r}
+# eigenvector centrality 
+eigen_centrality(g_measles)$vector
+
+# Edge Density - a proportion of edges that do exist, out of how many that could exist given a number of nodes
+edge_density(g_measles)
+
+# Average path length - mean of the lengths of the shortest paths between all pairs of vertices
+mean_distance(g_measles, directed=TRUE)
+# Lower mean distance means more interconnected
+```
+
+### Forrest Gump Network
+```{r}
+gump<-read.csv("../Input/gump.csv")
+
+# Inspect Forrest Gump Movie dataset
+head(gump)
+
+# Make an undirected network
+g_gump <- graph_from_data_frame(gump, directed = FALSE)
+
+# Identify key nodes using eigenvector centrality
+g.ec <- eigen_centrality(g_gump)
+which.max(g.ec$vector)
+
+# Plot Forrest Gump Network
+plot(g_gump,
+vertex.label.color = "black", 
+vertex.label.cex = 0.6,
+vertex.size = 25*(g.ec$vector),
+edge.color = 'gray88',
+main = "Forrest Gump Network"
+)
+```
+### Network density and average path length
+```{r}
+# Get density of a graph
+gd <- edge_density(g_gump)
+
+# Get the diameter of the graph g
+diameter(g_gump, directed = FALSE)
+
+# Get the average path length of the graph g
+g.apl <- mean_distance(g_gump, directed = FALSE)
+g.apl
+```
+
+
+
+### Understanding network structures
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
