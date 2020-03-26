@@ -62,22 +62,65 @@ g.apl <- mean_distance(g_gump, directed = FALSE)
 g.apl
 ```
 
-
-
 ### Understanding network structures
+
+Random network generation is used to compare the metrics of a given network - used to whether features of your original network are particularly unusual.
+
 ```{r}
+random<-erdos.renyi.game(n=gorder(g_gump),p.or.m=edge_density(g_gump),type="gnp")
+plot(g_gump)
+edge_density(g_gump)
+mean_distance(g_gump, directed = FALSE)
+
+plot(random)
+edge_density(random)
+#Get the average path length of the random graph g.random
+mean_distance(random, directed = FALSE)
+```
+### you can see that the mean distance is shorter in teh gump network, suggesting it's more interconnected than a random network
+
+Random graphs & randomization tests
+
+1. Generate 1000 random graphs based on the original network - e.g. with the same number of vertices and approximate density.
+2. Calculate the average path length of the original network.
+3. Calculate the average path length of the 1000 random networks.
+4. Determine how many random networks have an average path length greater or less than the original network's average path length.
+
+## Generate 1000 random graphs:
+```{r}
+# Generate 1000 random graphs
+gl <- vector('list',1000)
+
+for(i in 1:1000){
+    gl[[i]] <- erdos.renyi.game(
+                    n = gorder(g_gump), 
+                    p.or.m = edge_density(g_gump), 
+                    type = "gnp"
+                     ) 
+}
+
+## Calculate average path length of 1000 random graphs:
+gl.apls <- unlist(
+  lapply(gl, mean_distance, directed = FALSE) 
+)
+```
+
+```{r}
+## Comparing to the original network
+hist(gl.apls, xlim = range(c(1.5, 6)))
+# Plot the distribution of average path lengths
+abline(v = mean_distance(g_gump, directed=FALSE),col = "red", lty = 3,lwd = 2)
+# Calculate the proportion of graphs with an average path length lower than our observed
+mean(gl.apls < mean_distance(g_gump, directed=FALSE))
 
 ```
 
+### Network substructures:
+
+```{r}
 
 
-
-
-
-
-
-
-
+```
 
 
 
