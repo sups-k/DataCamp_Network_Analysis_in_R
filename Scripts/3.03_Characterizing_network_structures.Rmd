@@ -77,9 +77,9 @@ edge_density(random)
 #Get the average path length of the random graph g.random
 mean_distance(random, directed = FALSE)
 ```
-### you can see that the mean distance is shorter in teh gump network, suggesting it's more interconnected than a random network
+You can see that the mean distance is shorter in the gump network, suggesting it's more interconnected than a random network
 
-Random graphs & randomization tests
+## Random graphs & randomization tests
 
 1. Generate 1000 random graphs based on the original network - e.g. with the same number of vertices and approximate density.
 2. Calculate the average path length of the original network.
@@ -105,6 +105,7 @@ gl.apls <- unlist(
 )
 ```
 
+## Plot the graphs
 ```{r}
 ## Comparing to the original network
 hist(gl.apls, xlim = range(c(1.5, 6)))
@@ -112,16 +113,39 @@ hist(gl.apls, xlim = range(c(1.5, 6)))
 abline(v = mean_distance(g_gump, directed=FALSE),col = "red", lty = 3,lwd = 2)
 # Calculate the proportion of graphs with an average path length lower than our observed
 mean(gl.apls < mean_distance(g_gump, directed=FALSE))
-
 ```
 
-### Network substructures:
+## Network substructures:
+
+Transitivity: assess the probability that the adjacent vertices of a given vertex are connected
+
+local transitivty: calculates the proportion of closed triangles a given vertex is a part of, out of the total number of theoretical triangles a vertex could be a part of
 
 ```{r}
-
-
+# find all of the closed "triangles of a graph"
+triangles(g_gump)
+# calculate transitivity:
+transitivity(g_gump)
+# calculate local transitivity for FORREST
+transitivity(g_gump,vids="FORREST",type="local")
 ```
 
+### Identifying cliques:
+
+Cliques: substructures where all of the vertices are connected 
+
+largest_cliques finds all largest cliques in the input graph. A clique is largest if there is no other clique including more vertices.
+```{r}
+# Identify the largest clique
+largest_cliques(g_gump)
+```
+
+
+max_cliques finds all maximal cliques in the input graph. A clique in maximal if it cannot be extended to a larger clique. The largest cliques are always maximal, but a maximal clique is not neccessarily the largest.
+```{r}
+# Find max size:
+max_cliques(g_gump)
+```
 
 
 
