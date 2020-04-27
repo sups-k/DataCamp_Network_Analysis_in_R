@@ -162,7 +162,6 @@ summary(gl.trs)
 
 # Calculate the proportion of graphs with a transitivity score higher than Forrest Gump's network
 mean(gl.trs > g.tr)
-=======
 # find all of the closed "triangles of a graph"
 triangles(g_gump)
 # calculate transitivity:
@@ -179,7 +178,6 @@ largest_cliques finds all largest cliques in the input graph. A clique is larges
 ```{r}
 # Identify the largest clique
 largest_cliques(g_gump)
->>>>>>> b2aa1321feee488b265e39a34b3cc7bad9b71a9c
 ```
 
 ### Cliques:

@@ -15,14 +15,81 @@ library(igraph)
 
 # Close-Relationships-assortitivity-reciprocity
 
+## Assortativity: 
+the preferential attachment of vertices to other vertices that are similar in numerical or categorical attributes
+
+### to calculate in igraph:
+assortativity(g, values)
+g=igraph object, values=vertex of node attributes
+
+High assortativity means that nodes that have some identical characteristic are more likely to associate with one another
+
+If the attributes are categorical, they need to be converted to numbers - convert to factor levels
+
+### Possible values:
+0 there is no preferential association 
++1 individuals associate with individuals like itself
+-1 individuals avoid similar individuals
+
+To determine, you'd have to compare against randomized graphs
+
+## Degree assortativity:
+Do nodes with high degree preferentially associate with other nodes with high assortativity
+
+assortativity.degree(g,directed=FALSE)
+
+## reciprocity (of a directed network)
+Reciprocity is the proportion of nodes that are outgoing is similar for all nodes, on average. 
+reciprocity(g)
+
+
+## Exercises:
+
+### Assortativity
+In this exercise you will determine the assortativity() of the second friendship network from the first chapter. This is a measure of how preferentially attached vertices are to other vertices with identical attributes. You will also determine the degree assortativity which determines how preferentially attached are vertices to other vertices of a similar degree.
+```{r}
+# Convert friends matrix to an igraph object
+g_friends<-graph_from_data_frame(d=edges.df, vertices=vertices.df, directed=FALSE)
+
+# Plot the network
+plot(g_friends)
+
+# Convert the gender attribute into a numeric value
+values <- as.numeric(factor(V(g_friends)$gender))
+
+# Calculate the assortativity of the network based on gender
+assortativity(g_friends, values)
+
+# Calculate the assortativity degree of the network
+assortativity.degree(g_friends, directed = FALSE)
+```
 
 
 
+### Using randomization 
+
+Using randomizations to assess assortativity
+
+In this exercise you will determine how likely the observed assortativity in the friendship network is given the genders of vertices by performing a randomization procedure. You will randomly permute the gender of vertices in the network 1000 times and recalculate the assortativity for each random network.
+
+```{r}
+# Calculate the observed assortativity
+observed.assortativity<-assortativity(g_friends, values)
+
+# Calculate the assortativity of the network randomizing the gender attribute 1000 times
+results <- vector('list', 1000)
+for(i in 1:1000){
+  results[[i]] <- assortativity(g_friends, sample(values))
+}
+
+# Plot the distribution of assortativity values and add a red vertical line at the original observed value
+plot(hist(unlist(results)))
+abline(v = observed.assortativity, col = "red", lty = 3, lwd=2)
+
+```
 
 
+### Community Detection
+```{r}
 
-
-
-
-
-
+```
