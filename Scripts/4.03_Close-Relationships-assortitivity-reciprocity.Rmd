@@ -90,6 +90,103 @@ abline(v = observed.assortativity, col = "red", lty = 3, lwd=2)
 
 
 ### Community Detection
+Community structure allows you to find substructures where vertices within each group 
+
+'Communities", "modules", or "clusters" 
+
+Functional subunits of a network
+
+Relatively straightforward, but can be computationally demanding. There are several algorithms - useful to try the different methods to see which is most useful for your data
+
+fastgreedy.community(g)
+
+
 ```{r}
+fastgreedy<-fastgreedy.community(g_friends)
+length(fastgreedy)
+sizes(fastgreedy)
+membership(fastgreedy)
+plot(fastgreedy, g_friends)
+```
+
+```{r}
+eb<-edge.betweenness.community(g_friends)
+length(eb)
+sizes(eb)
+membership(eb)
+plot(eb, g_friends)
+```
+
+```{r}
+eigen<-leading.eigenvector.community(g_friends)
+```
+
+### Plot the 3 methods side by side
+```{r}
+# Plot community networks determined by fast-greedy and edge-betweenness methods side-by-side
+par(mfrow = c(1,3)) 
+plot(fastgreedy, g_friends)
+plot(eb, g_friends)
+plot(eigen, g_friends)
 
 ```
+
+
+## Interactive network visualizations:
+
+R network visualization packages:
+    igraph
+    statnet
+    ggnet
+    ggnetwork
+    ggraph
+    visNetwork
+    networkD3
+    sigma
+    rgexf (igraph to Gephi)
+    threejs
+
+
+### threejs
+```{r}
+install.packages("threejs")
+library(threejs)
+
+
+# Set a vertex attribute called 'color' to 'dodgerblue' 
+g_friends <- set_vertex_attr(g_friends, "color", value = "dodgerblue")
+
+# Redraw the graph and make the vertex size 1
+graphjs(g_friends, vertex.size =1)
+
+```
+
+#### Sizing vertices in threejs
+```{r}
+# Create numerical vector of vertex eigenvector centralities 
+ec <- as.numeric(eigen_centrality(g_friends)$vector)
+
+# Create new vector 'v' that is equal to the square-root of 'ec' multiplied by 3
+v <- 3*sqrt(ec)
+
+# Plot threejs plot of graph setting vertex size to v
+graphjs(g_friends, vertex.size = v)
+
+```
+
+#### 3D Community Network Graph
+```{r}
+# Create an object 'i' containin the memberships of the fast-greedy community detection
+i <-  membership(fastgreedy)
+
+# Check the number of different communities
+sizes(fastgreedy)
+
+# Add a color attribute to each vertex, setting the vertex color based on community membership
+g_friends<- set_vertex_attr(g_friends, "color", value = c("yellow", "blue", "red","orange")[i])
+
+# Plot the graph using threejs
+graphjs(g_friends, vertex.size = v)
+
+```
+
